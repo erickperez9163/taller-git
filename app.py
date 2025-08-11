@@ -21,7 +21,47 @@ app.config.suppress_callback_exceptions = True
 
 # Load data from csv
 def load_data():
-    # To do: Completar la función 
+    """
+    Carga el archivo CSV de datos energéticos y lo procesa para el tablero.
+    
+    Returns:
+        pd.DataFrame: DataFrame con los datos de energía, donde:
+                     - La columna de fecha está en formato datetime
+                     - El índice del DataFrame es la fecha
+    """
+    try:
+        # Cargar el archivo CSV
+        df = pd.read_csv('datos_energia.csv')
+        
+        # Buscar la columna de fecha automáticamente
+        # Posibles nombres de columnas de fecha
+        date_columns = ['fecha', 'date', 'Fecha', 'Date', 'timestamp', 'Timestamp', 'time', 'Time']
+        date_col = None
+        
+        for col in date_columns:
+            if col in df.columns:
+                date_col = col
+                break
+        
+        # Si no encuentra ninguna columna de fecha con nombres comunes, usar la primera columna
+        if date_col is None:
+            date_col = df.columns[0]
+        
+        # Convertir la columna de fecha a formato datetime
+        df[date_col] = pd.to_datetime(df[date_col])
+        
+        # Establecer la fecha como índice del DataFrame
+        df.set_index(date_col, inplace=True)
+        
+        # Retornar el DataFrame procesado
+        return df
+        
+    except FileNotFoundError:
+        print("Error: No se encontró el archivo 'datos_energia.csv'")
+        return pd.DataFrame()  # Retornar DataFrame vacío en lugar de None
+    except Exception as e:
+        print(f"Error al cargar los datos: {e}")
+        return pd.DataFrame()  # Retornar DataFrame vacío en lugar de None
     
 
 # Cargar datos
@@ -240,4 +280,4 @@ def update_output_div(date, hour, proy):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True)
