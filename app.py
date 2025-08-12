@@ -31,7 +31,7 @@ def load_data():
     """
     try:
         # Cargar el archivo CSV
-        df = pd.read_csv('datos_energia.csv')
+        df1 = pd.read_csv('datos_energia.csv')
         
         # Buscar la columna de fecha automáticamente
         # Posibles nombres de columnas de fecha
@@ -39,22 +39,22 @@ def load_data():
         date_col = None
         
         for col in date_columns:
-            if col in df.columns:
+            if col in df1.columns:
                 date_col = col
                 break
         
         # Si no encuentra ninguna columna de fecha con nombres comunes, usar la primera columna
         if date_col is None:
-            date_col = df.columns[0]
+            date_col = df1.columns[0]
         
         # Convertir la columna de fecha a formato datetime
-        df[date_col] = pd.to_datetime(df[date_col])
+        df1[date_col] = pd.to_datetime(df1[date_col])
         
         # Establecer la fecha como índice del DataFrame
-        df.set_index(date_col, inplace=True)
+        df1.set_index(date_col, inplace=True)
         
         # Retornar el DataFrame procesado
-        return df
+        return df1
         
     except FileNotFoundError:
         print("Error: No se encontró el archivo 'datos_energia.csv'")
